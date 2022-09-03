@@ -1,0 +1,134 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Title</title>-->
+<!--</head>-->
+<!--<body>-->
+{% extends "main.html" %}
+{% block content %}
+{% load crispy_forms_tags %}
+{%if user.is_authenticated%}
+<div id="wrap">
+  <div id="regbar">
+    <div id="navthing">
+      <h2><a href="{% url 'credentials:logout'%}" id="loginform">Logout</a> | <a href="#">Welcome,{{user.username}}</a></h2>
+  </div>
+</div>
+{%endif%}
+<div class="container">
+    <div id="click__modal" style="display:none;">
+        </div>
+  <h1>Order Form</h1>
+<div>
+             {% if messages %}
+                {% for message in messages %}
+                 <div class="container-fluid p-0">
+                     <div class="alert {{ message.tags }}" role="alert" >
+                       <strong>Success!</strong>{{ message }}<a href="{%url 'storeapp:home'%}" class="alert-link">return to home page</a>
+
+                        </div>
+                 </div>
+                {% endfor %}
+            {% endif %}
+         </div>
+  <form method="post" id="orderForm" data-courses-url="{% url 'storeapp:ajax_load_courses' %}" novalidate action="/order/">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group col-md-4 mb-0">
+        {{ form.name|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-4 mb-0">
+        {{ form.mail_id|as_crispy_field }}
+      </div>
+        <div class="form-group col-md-4 mb-0">
+        {{ form.phone_number|as_crispy_field }}
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-4 mb-0">
+        {{ form.dob|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-4 mb-0">
+        {{ form.age|as_crispy_field }}
+      </div>
+       <div class="form-group col-md-4 mb-0">
+        {{ form.gender|as_crispy_field }}
+      </div>
+    </div>
+    {{ form.address|as_crispy_field }}
+    <div class="form-row">
+        <div class="form-group col-md-4 mb-0">
+        {{ form.department|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-4 mb-0">
+        {{ form.course|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-4 mb-0">
+        {{ form.purpose|as_crispy_field }}
+      </div>
+    </div>
+    {{ form.materials_provided|as_crispy_field }}
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script>
+    $("#id_department").change(function () {
+      var url = $("#orderForm").attr("data-courses-url");  // get the url of the `load_cities` view
+      var departmentId = $(this).val();  // get the selected country ID from the HTML input
+
+      $.ajax({                       // initialize an AJAX request
+        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+        data: {
+          'department': departmentId       // add the country id to the GET parameters
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+          $("#id_course").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+      });
+
+    });
+  </script>
+<!-- <script>-->
+<!--     $('#orderForm').on('submit', function(event){-->
+<!--    event.preventDefault();-->
+<!--    $("#click__modal").dialog({-->
+<!--                modal: true,-->
+<!--                height: "auto",-->
+<!--                width: "30vw",-->
+<!--                title: "Order Confirmed!",-->
+<!--                buttons: {-->
+
+<!--                    "OK": function () {-->
+<!--                        $(this).dialog("close");-->
+<!--                        return window.location.replace("{% url 'storeapp:home' %}")-->
+<!--                    }-->
+<!--                }-->
+<!--            }-->
+<!--        ) // sanity check-->
+<!--    create_post();-->
+<!--});-->
+<!--function create_post() {-->
+<!--    console.log("create post is working!") // sanity check-->
+<!--    type: 'POST',-->
+<!--                url: "{% url 'storeapp:order' %}",-->
+<!--                data:{-->
+<!--                    csrfmiddlewaretoken:'{{ csrf_token }}',-->
+<!--                    username:$('#id_username').val(),-->
+<!--                    number:$('#id_number').val(),-->
+<!--                },-->
+<!--        // handle a successful response-->
+<!--        success : function(response_data) {-->
+<!--             $('#click__modal').html("<div class='alert-box alert radius' data-alert>{{response_data.message}}-->
+<!--                " <a href='{%url 'storeapp:home'%}' class='close'>&times;</a></div>");-->
+<!--        },-->
+<!--    });-->
+<!--};-->
+
+<!-- </script>-->
+
+<!--{%endblock%}-->
+<!--&lt;!&ndash;</body>&ndash;&gt;-->
+<!--&lt;!&ndash;</html>&ndash;&gt;-->
